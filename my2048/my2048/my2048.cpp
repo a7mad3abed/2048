@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <thread>
+#include <chrono>
 
 const unsigned int rowLength = 8;
 
@@ -31,7 +32,9 @@ void left()
 }
 void display(){
 	while(1){
+#ifdef __unix__
 		system("clear");
+#endif
 		for (int i = 0; i < row.size();i++)
 			std::cout << row[i].value() << "  ";
 		std::cout << std::endl;
@@ -52,8 +55,12 @@ int main()
 	row[6].setValue(8);
 	row[7].setValue(4);
 
+    using namespace std::chrono_literals;
 
 	std::thread view (display);
+    auto start = std::chrono::high_resolution_clock::now();
+    std::this_thread::sleep_for(5s);
+
 	std::thread chos (choose);
 
 	view.join();
