@@ -2,6 +2,11 @@
 #include <vector>
 #include <thread>
 #include <chrono>
+#ifdef _WIN32
+#include <conio.h>
+
+#endif // 
+
 
 const unsigned int rowLength = 8;
 
@@ -15,6 +20,13 @@ class Cell{
 
 std::vector<Cell> row{rowLength};
 
+void display(){
+#ifdef __unix__
+		system("clear");
+#endif
+		for (int i = 0; i < row.size();i++)
+			std::cout << row[i].value() << "  ";
+	}
 
 void left()
 {
@@ -29,23 +41,45 @@ void left()
 			}
 		}
 	}
-}
-void display(){
-	while(1){
-#ifdef __unix__
-		system("clear");
-#endif
-		for (int i = 0; i < row.size();i++)
-			std::cout << row[i].value() << "  ";
-		std::cout << std::endl;
-	}
+#ifdef _WIN32
+    system("cls");
+#elif defined __unix__
+    system("clear");
+#endif // 
 
+
+    display();
 }
+
+void right()
+{
+	for (int i = rowLength-1; i >= 0; i--){
+		if(row[i].value() == 0){
+			for(int j = i-1; j>=0;j--){
+				if(row[j].value() >0){
+					row[i].setValue(row[j].value());
+					row[j].setValue(0);
+					break;
+				}
+			}
+		}
+	}
+    system("cls");
+    display();
+}
+
 void choose(){
 	char c;
+#ifdef _WIN32
+    while(c = _getch()){
+
+#elif defined __unix__
 	while(std::cin >> c){
-		if(c == 'r') left();
+#endif
+
+		if(c == 'l') left();
 		if(c == 'q') exit(0);
+        if (c == 'r') right();
 	}
 }
 int main()
@@ -59,9 +93,10 @@ int main()
 
 	std::thread view (display);
     auto start = std::chrono::high_resolution_clock::now();
-    std::this_thread::sleep_for(5s);
+    std::this_thread::sleep_for(1s);
 
 	std::thread chos (choose);
+
 
 	view.join();
 	chos.join();
