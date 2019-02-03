@@ -7,7 +7,7 @@
 #endif // 
 
 
-const unsigned int rowLength = 8;
+const unsigned int rowLength = 4;
 
 class Cell{
 	public:
@@ -17,24 +17,34 @@ class Cell{
 		int mValue = 0;
 };
 
-std::vector<Cell> row{rowLength};
+std::vector<Cell> board{16};
 
 void display(){
 #ifdef __unix__
 		system("clear");
 #endif
-		for (int i = 0; i < row.size();i++)
-			std::cout << row[i].value() << "  ";
-	}
+		for (int i = 0; i < rowLength;i++)
+			std::cout << board[i].value() << "  ";
+        std::cout << std::endl;
+        for (int i = rowLength; i < rowLength*2; i++)
+			std::cout << board[i].value() << "  ";
+        std::cout << std::endl;
+        for (int i = rowLength*2; i < rowLength*3; i++)
+			std::cout << board[i].value() << "  ";
+        std::cout << std::endl;
+        for (int i = rowLength*3; i < rowLength*4; i++)
+			std::cout << board[i].value() << "  ";
+
+}
 
 void left()
 {
 	for (int i = 0; i < rowLength; i++){
-		if(row[i].value() == 0){
+		if(board[i].value() == 0){
 			for(int j = i+1; j<rowLength;j++){
-				if(row[j].value() >0){
-					row[i].setValue(row[j].value());
-					row[j].setValue(0);
+				if(board[j].value() >0){
+					board[i].setValue(board[j].value());
+					board[j].setValue(0);
 					break;
 				}
 			}
@@ -53,17 +63,21 @@ void left()
 void right()
 {
 	for (int i = rowLength-1; i >= 0; i--){
-		if(row[i].value() == 0){
+		if(board[i].value() == 0){
 			for(int j = i-1; j>=0;j--){
-				if(row[j].value() >0){
-					row[i].setValue(row[j].value());
-					row[j].setValue(0);
+				if(board[j].value() >0){
+					board[i].setValue(board[j].value());
+					board[j].setValue(0);
 					break;
 				}
 			}
 		}
 	}
+#ifdef _WIN32
     system("cls");
+#elif defined __unix__
+    system("clear");
+#endif // 
     display();
 }
 
@@ -83,10 +97,9 @@ void choose(){
 }
 int main()
 {
-	row[2].setValue(4); 
-	row[5].setValue(2);
-	row[6].setValue(8);
-	row[7].setValue(4);
+	board[0].setValue(4); 
+	board[2].setValue(2);
+	board[3].setValue(4);
 
     using namespace std::chrono_literals;
 
