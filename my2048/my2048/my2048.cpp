@@ -12,7 +12,7 @@ private:
     int mValue = 0;
 };
 
-int main()
+int main(int argc, char **argv)
 {
 
     std::vector<Cell> row(rowLength);
