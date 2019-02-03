@@ -2,7 +2,7 @@
 #include <vector>
 #include <thread>
 
-constexpr int rowLength = 8;
+const unsigned int rowLength = 8;
 
 class Cell{
 	public:
