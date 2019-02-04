@@ -12,6 +12,11 @@
 #endif
 
 
+#define KEY_UP 72
+#define KEY_DOWN 80
+#define KEY_LEFT 75
+#define KEY_RIGHT 77
+
 const unsigned int rowColLength = 4;
 const unsigned int colLength = 4;
 const unsigned int noOfRowsCols = 4;
@@ -268,11 +273,11 @@ void choose(){
 	while(std::cin >> c){
 #endif
 
-		if(c == 'l') left();
+		if(c == KEY_LEFT) left();
 		if(c == 'q') exit(0);
-        if (c == 'r') right();
-        if (c == 'u') up();
-        if (c == 'd') down();
+        if (c == KEY_RIGHT) right();
+        if (c == KEY_UP) up();
+        if (c == KEY_DOWN) down();
 	}
 }
 int main()
