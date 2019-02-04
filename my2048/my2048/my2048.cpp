@@ -41,20 +41,19 @@ void display(){
 		system("clear");
 #endif
 		for (int i = 0; i < rowLength;i++)
-			std::cout << board[i].value() << "  ";
+			std::cout << board[i].value() << "    ";
+        std::cout << std::endl;
         std::cout << std::endl;
         for (int i = rowLength; i < rowLength*2; i++)
-			std::cout << board[i].value() << "  ";
+			std::cout << board[i].value() << "    ";
+        std::cout << std::endl;
         std::cout << std::endl;
         for (int i = rowLength*2; i < rowLength*3; i++)
-			std::cout << board[i].value() << "  ";
+			std::cout << board[i].value() << "    ";
+        std::cout << std::endl;
         std::cout << std::endl;
         for (int i = rowLength*3; i < rowLength*4; i++)
 			std::cout << board[i].value() << "  ";
-        std::cout << std::endl;
-        std::cout << std::endl;
-        std::cout << std::endl;
-        std::cout << std::endl;
 
 }
 
