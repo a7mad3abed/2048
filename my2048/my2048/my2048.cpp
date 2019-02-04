@@ -53,7 +53,12 @@ void display(){
         std::cout << std::endl;
         std::cout << std::endl;
         for (int i = rowLength*3; i < rowLength*4; i++)
-			std::cout << board[i].value() << "  ";
+			std::cout << board[i].value() << "    ";
+
+        std::cout << std::endl;
+        std::cout << std::endl;
+        std::cout << std::endl;
+
 
 }
 
@@ -145,9 +150,9 @@ void right()
     display();
 }
 
-struct termios orig_termios;
 
 #ifdef __unix__
+struct termios orig_termios;
 void disableRawMode(){
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
 }
