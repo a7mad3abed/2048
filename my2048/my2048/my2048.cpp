@@ -8,16 +8,27 @@
 
 
 const unsigned int rowLength = 4;
+const unsigned int colLength = 4;
 
 class Cell{
 	public:
+        Cell();
+        ~Cell();
 		int value()const{return mValue;}
 		void setValue(int val){mValue = val;}
 	private:
-		int mValue = 0;
+		int mValue;
 };
 
-std::vector<Cell> board{16};
+Cell::Cell() :
+    mValue{ 0 }
+{}
+
+Cell::~Cell(){}
+
+std::vector<Cell> board;
+
+std::vector<std::vector<Cell>> rows(4, std::vector<Cell>(4));
 
 void display(){
 #ifdef __unix__
@@ -37,19 +48,37 @@ void display(){
 
 }
 
+void flushRow() {
+    for (int i = 0; i < rows.size(); i++) {
+        for (int j = 0; j < rows[i].size(); j++) {
+            board[i * 4 + j].setValue(rows[i][j].value());
+        }
+    }
+}
+
+void loadRows() {
+    for (int i = 0; i < rows.size(); i++) {
+        for (int j = 0; j < rows[i].size(); j++) {
+            rows[i][j].setValue(board[i * 4 + j].value());
+        }
+    }
+}
+
 void left()
 {
-	for (int i = 0; i < rowLength; i++){
-		if(board[i].value() == 0){
-			for(int j = i+1; j<rowLength;j++){
-				if(board[j].value() >0){
-					board[i].setValue(board[j].value());
-					board[j].setValue(0);
-					break;
-				}
-			}
-		}
-	}
+    for (int x = 0; x < rows.size(); x++) {
+        for (int i = 0; i < rowLength; i++) {
+            if (rows[x][i].value() == 0) {
+                for (int j = i + 1; j < rowLength; j++) {
+                    if (rows[x][j].value() > 0) {
+                        rows[x][i].setValue(rows[x][j].value());
+                        rows[x][j].setValue(0);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 #ifdef _WIN32
     system("cls");
 #elif defined __unix__
@@ -60,6 +89,20 @@ void left()
     display();
 }
 
+void initBoard() {
+    for (int i = 0; i < 16; i++) {
+        Cell cell;
+        board.push_back(cell);
+    }
+}
+void initRows() {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            Cell cell;
+            rows[i].push_back(cell);
+        }
+    }
+}
 void right()
 {
 	for (int i = rowLength-1; i >= 0; i--){
@@ -97,9 +140,14 @@ void choose(){
 }
 int main()
 {
+
+    initBoard();
+    initRows();
+
 	board[0].setValue(4); 
 	board[2].setValue(2);
 	board[3].setValue(4);
+    board[6].setValue(8);
 
     using namespace std::chrono_literals;
 
