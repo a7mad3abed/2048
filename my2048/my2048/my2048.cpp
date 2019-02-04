@@ -9,6 +9,7 @@
 
 const unsigned int rowLength = 4;
 const unsigned int colLength = 4;
+const unsigned int noOfRows = 4;
 
 class Cell{
 	public:
@@ -49,25 +50,22 @@ void display(){
 }
 
 void flushRows() {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < noOfRows; i++) {
         for (int j = 0; j < rowLength; j++) {
-            board[i * 4 + j].setValue(rows[i][j].value());
+            board[i * noOfRows + j].setValue(rows[i][j].value());
         }
     }
 }
 
 void loadRows() {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < noOfRows; i++) {
         for (int j = 0; j < rowLength; j++) {
-            rows[i][j].setValue(board[i * 4 + j].value());
+            rows[i][j].setValue(board[i * noOfRows + j].value());
         }
     }
 }
-
-void left()
-{
-    loadRows();
-    for (int x = 0; x < 4;  x++) {
+void compressRowsToLeft() {
+    for (int x = 0; x < noOfRows;  x++) {
         for (int i = 0; i < rowLength; i++) {
             if (rows[x][i].value() == 0) {
                 for (int j = i + 1; j < rowLength; j++) {
@@ -80,6 +78,27 @@ void left()
             }
         }
     }
+}
+
+void compressRowsToRight() {
+    for (int x = 0; x < noOfRows; x++) {
+        for (int i = noOfRows - 1; i > 0; i--) {
+            if (rows[x][i].value() == 0) {
+                for (int j = i - 1; j >= 0; j--) {
+                    if (rows[x][j].value() > 0) {
+                        rows[x][i].setValue(rows[x][j].value());
+                        rows[x][j].setValue(0);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+void left()
+{
+    loadRows();
+    compressRowsToLeft();
     flushRows();
 #ifdef _WIN32
     system("cls");
@@ -108,30 +127,7 @@ void initRows() {
 void right()
 {
     loadRows();
-    for (int x = 0; x < 4; x++) {
-        for (int i = 4 - 1; i > 0; i--) {
-            if (rows[x][i].value() == 0) {
-                for (int j = i - 1; j >= 0; j--) {
-                    if (rows[x][j].value() > 0) {
-                        rows[x][i].setValue(rows[x][j].value());
-                        rows[x][j].setValue(0);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-	/*for (int i = rowLength-1; i >= 0; i--){
-		if(board[i].value() == 0){
-			for(int j = i-1; j>=0;j--){
-				if(board[j].value() >0){
-					board[i].setValue(board[j].value());
-					board[j].setValue(0);
-					break;
-				}
-			}
-		}
-	}*/
+    compressRowsToRight();
     flushRows();
 #ifdef _WIN32
     system("cls");
