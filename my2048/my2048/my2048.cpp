@@ -48,17 +48,17 @@ void display(){
 
 }
 
-void flushRow() {
-    for (int i = 0; i < rows.size(); i++) {
-        for (int j = 0; j < rows[i].size(); j++) {
+void flushRows() {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < rowLength; j++) {
             board[i * 4 + j].setValue(rows[i][j].value());
         }
     }
 }
 
 void loadRows() {
-    for (int i = 0; i < rows.size(); i++) {
-        for (int j = 0; j < rows[i].size(); j++) {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < rowLength; j++) {
             rows[i][j].setValue(board[i * 4 + j].value());
         }
     }
@@ -66,7 +66,8 @@ void loadRows() {
 
 void left()
 {
-    for (int x = 0; x < rows.size(); x++) {
+    loadRows();
+    for (int x = 0; x < 4;  x++) {
         for (int i = 0; i < rowLength; i++) {
             if (rows[x][i].value() == 0) {
                 for (int j = i + 1; j < rowLength; j++) {
@@ -79,6 +80,7 @@ void left()
             }
         }
     }
+    flushRows();
 #ifdef _WIN32
     system("cls");
 #elif defined __unix__
@@ -105,7 +107,21 @@ void initRows() {
 }
 void right()
 {
-	for (int i = rowLength-1; i >= 0; i--){
+    loadRows();
+    for (int x = 0; x < 4; x++) {
+        for (int i = 4 - 1; i > 0; i--) {
+            if (rows[x][i].value() == 0) {
+                for (int j = i - 1; j >= 0; j--) {
+                    if (rows[x][j].value() > 0) {
+                        rows[x][i].setValue(rows[x][j].value());
+                        rows[x][j].setValue(0);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+	/*for (int i = rowLength-1; i >= 0; i--){
 		if(board[i].value() == 0){
 			for(int j = i-1; j>=0;j--){
 				if(board[j].value() >0){
@@ -115,7 +131,8 @@ void right()
 				}
 			}
 		}
-	}
+	}*/
+    flushRows();
 #ifdef _WIN32
     system("cls");
 #elif defined __unix__
@@ -148,6 +165,8 @@ int main()
 	board[2].setValue(2);
 	board[3].setValue(4);
     board[6].setValue(8);
+    board[11].setValue(2);
+    board[13].setValue(2);
 
     using namespace std::chrono_literals;
 
