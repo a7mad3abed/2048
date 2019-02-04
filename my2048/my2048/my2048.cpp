@@ -12,9 +12,9 @@
 #endif
 
 
-const unsigned int rowLength = 4;
+const unsigned int rowColLength = 4;
 const unsigned int colLength = 4;
-const unsigned int noOfRows = 4;
+const unsigned int noOfRowsCols = 4;
 
 class Cell{
 	public:
@@ -35,24 +35,25 @@ Cell::~Cell(){}
 std::vector<Cell> board;
 
 std::vector<std::vector<Cell>> rows(4, std::vector<Cell>(4));
+std::vector<std::vector<Cell>> cols(4, std::vector<Cell>(4));
 
 void display(){
 #ifdef __unix__
 		system("clear");
 #endif
-		for (int i = 0; i < rowLength;i++)
+		for (int i = 0; i < rowColLength ;i++)
 			std::cout << board[i].value() << "    ";
         std::cout << std::endl;
         std::cout << std::endl;
-        for (int i = rowLength; i < rowLength*2; i++)
+        for (int i = rowColLength; i < rowColLength*2; i++)
 			std::cout << board[i].value() << "    ";
         std::cout << std::endl;
         std::cout << std::endl;
-        for (int i = rowLength*2; i < rowLength*3; i++)
+        for (int i = rowColLength*2; i < rowColLength*3; i++)
 			std::cout << board[i].value() << "    ";
         std::cout << std::endl;
         std::cout << std::endl;
-        for (int i = rowLength*3; i < rowLength*4; i++)
+        for (int i = rowColLength*3; i < rowColLength*4; i++)
 			std::cout << board[i].value() << "    ";
 
         std::cout << std::endl;
@@ -63,25 +64,43 @@ void display(){
 }
 
 void flushRows() {
-    for (int i = 0; i < noOfRows; i++) {
-        for (int j = 0; j < rowLength; j++) {
-            board[i * noOfRows + j].setValue(rows[i][j].value());
+    for (int i = 0; i < rowColLength; i++) {
+        for (int j = 0; j < rowColLength; j++) {
+            board[i * rowColLength + j].setValue(rows[i][j].value());
         }
     }
 }
 
 void loadRows() {
-    for (int i = 0; i < noOfRows; i++) {
-        for (int j = 0; j < rowLength; j++) {
-            rows[i][j].setValue(board[i * noOfRows + j].value());
+    for (int i = 0; i < noOfRowsCols; i++) {
+        for (int j = 0; j < rowColLength; j++) {
+            rows[i][j].setValue(board[i * noOfRowsCols + j].value());
         }
     }
 }
-void compressRowsToLeft() {
-    for (int x = 0; x < noOfRows;  x++) {
-        for (int i = 0; i < rowLength; i++) {
+
+void loadCols() {
+    for (int i = 0; i < noOfRowsCols; i++) {
+        for (int j = 0; j < rowColLength; j++) {
+            cols[i][j].setValue(board[i + j * 4].value());
+        }
+
+    }
+}
+
+void flushCols() {
+    for (int i = 0; i < rowColLength; i++) {
+        for (int j = 0; j < rowColLength; j++) {
+            board[i + rowColLength * j].setValue(cols[i][j].value());
+        }
+    }
+}
+
+void compressLeft() {
+    for (int x = 0; x < noOfRowsCols;  x++) {
+        for (int i = 0; i < rowColLength; i++) {
             if (rows[x][i].value() == 0) {
-                for (int j = i + 1; j < rowLength; j++) {
+                for (int j = i + 1; j < rowColLength; j++) {
                     if (rows[x][j].value() > 0) {
                         rows[x][i].setValue(rows[x][j].value());
                         rows[x][j].setValue(0);
@@ -93,9 +112,25 @@ void compressRowsToLeft() {
     }
 }
 
-void compressRowsToRight() {
-    for (int x = 0; x < noOfRows; x++) {
-        for (int i = noOfRows - 1; i > 0; i--) {
+void compressUp() {
+    for (int x = 0; x < noOfRowsCols;  x++) {
+        for (int i = 0; i < rowColLength; i++) {
+            if (cols[x][i].value() == 0) {
+                for (int j = i + 1; j < rowColLength; j++) {
+                    if (cols[x][j].value() > 0) {
+                        cols[x][i].setValue(cols[x][j].value());
+                        cols[x][j].setValue(0);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void compressRight() {
+    for (int x = 0; x < noOfRowsCols; x++) {
+        for (int i = noOfRowsCols - 1; i > 0; i--) {
             if (rows[x][i].value() == 0) {
                 for (int j = i - 1; j >= 0; j--) {
                     if (rows[x][j].value() > 0) {
@@ -108,10 +143,26 @@ void compressRowsToRight() {
         }
     }
 }
+
+void compressDown() {
+    for (int x = 0; x < noOfRowsCols; x++) {
+        for (int i = noOfRowsCols - 1; i > 0; i--) {
+            if (cols[x][i].value() == 0) {
+                for (int j = i - 1; j >= 0; j--) {
+                    if (cols[x][j].value() > 0) {
+                        cols[x][i].setValue(cols[x][j].value());
+                        cols[x][j].setValue(0);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
 void left()
 {
     loadRows();
-    compressRowsToLeft();
+    compressLeft();
     flushRows();
 #ifdef _WIN32
     system("cls");
@@ -120,6 +171,45 @@ void left()
 #endif // 
 
 
+    display();
+}
+
+void right()
+{
+    loadRows();
+    compressRight();
+    flushRows();
+#ifdef _WIN32
+    system("cls");
+#elif defined __unix__
+    system("clear");
+#endif // 
+    display();
+}
+
+void up() {
+    loadCols();
+    compressUp();
+    flushCols();
+
+#ifdef _WIN32
+    system("cls");
+#elif defined __unix__
+    system("clear");
+#endif // 
+
+    display();
+}
+
+void down() {
+    loadCols();
+    compressDown();
+    flushCols();
+#ifdef _WIN32
+    system("cls");
+#elif defined __unix__
+    system("clear");
+#endif // 
     display();
 }
 
@@ -137,18 +227,16 @@ void initRows() {
         }
     }
 }
-void right()
-{
-    loadRows();
-    compressRowsToRight();
-    flushRows();
-#ifdef _WIN32
-    system("cls");
-#elif defined __unix__
-    system("clear");
-#endif // 
-    display();
+
+void initCols() {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            Cell cell;
+            cols[i].push_back(cell);
+        }
+    }
 }
+
 
 
 #ifdef __unix__
@@ -183,6 +271,8 @@ void choose(){
 		if(c == 'l') left();
 		if(c == 'q') exit(0);
         if (c == 'r') right();
+        if (c == 'u') up();
+        if (c == 'd') down();
 	}
 }
 int main()
@@ -190,6 +280,7 @@ int main()
 
     initBoard();
     initRows();
+    initCols();
 
 	board[0].setValue(4); 
 	board[2].setValue(2);
