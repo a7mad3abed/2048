@@ -1,10 +1,15 @@
 #include <iostream>
+#include <stdlib.h>
 #include <vector>
 #include <thread>
 #include <chrono>
 #ifdef _WIN32
 #include <conio.h>
 #endif // 
+#ifdef __unix__
+#include <unistd.h>
+#include <termios.h>
+#endif
 
 
 const unsigned int rowLength = 4;
@@ -46,6 +51,10 @@ void display(){
         std::cout << std::endl;
         for (int i = rowLength*3; i < rowLength*4; i++)
 			std::cout << board[i].value() << "  ";
+        std::cout << std::endl;
+        std::cout << std::endl;
+        std::cout << std::endl;
+        std::cout << std::endl;
 
 }
 
@@ -137,12 +146,33 @@ void right()
     display();
 }
 
+struct termios orig_termios;
+
+#ifdef __unix__
+void disableRawMode(){
+	tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
+}
+
+void enableRawMode(){
+	tcgetattr(STDIN_FILENO, &orig_termios);
+	atexit(disableRawMode);
+
+	struct termios raw = orig_termios;
+	raw.c_lflag &= ~(ECHO | ICANON);
+
+	tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+}
+
+#endif
+
 void choose(){
 	char c;
 #ifdef _WIN32
     while(c = _getch()){
 
 #elif defined __unix__
+
+	    enableRawMode();
 	while(std::cin >> c){
 #endif
 
