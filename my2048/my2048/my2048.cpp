@@ -29,16 +29,31 @@ class Cell{
         Cell();
         ~Cell();
 		int value()const{return mValue;}
-		void setValue(int val){mValue = val;}
+        void setValue(int val);
+        bool isFree() const;
+        void setFree(bool);
 	private:
 		int mValue;
+        bool mFree;
 };
 
 Cell::Cell() :
-    mValue{ 0 }
-{}
+    mValue{ 0 },
+    mFree{ true }
+{
+}
+
 
 Cell::~Cell(){}
+
+bool Cell::isFree() const { return mFree; }
+void Cell::setFree(bool f) { mFree = f; }
+
+void Cell::setValue(int val) {
+    mValue = val;
+    if (mValue > 0) mFree = false;
+    if (mValue == 0) mFree = true;
+}
 
 std::vector<Cell> board;
 
@@ -284,6 +299,7 @@ void initBoard() {
         board.push_back(cell);
     }
 }
+
 void initRows() {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
