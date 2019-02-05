@@ -12,10 +12,13 @@
 #endif
 
 
+#ifdef _WIN32
 #define KEY_UP 72
 #define KEY_DOWN 80
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
+#endif
+
 
 const unsigned int rowColLength = 4;
 const unsigned int colLength = 4;
@@ -266,18 +269,26 @@ void choose(){
 	char c;
 #ifdef _WIN32
     while(c = _getch()){
+	    if(c == KEY_LEFT) left();
+	    if(c == 'q') exit(0);
+	    if (c == KEY_RIGHT) right();
+	    if (c == KEY_UP) up();
+	    if (c == KEY_DOWN) down();
 
 #elif defined __unix__
-
+	    char d,e;
 	    enableRawMode();
 	while(std::cin >> c){
+		if (c == 'q') exit(0);
+		std::cin >> d >> e;
+		if((c==27) && (d == 91)){
+			if (e == 65) up();
+			if (e == 66) down();
+			if (e == 67) right();
+			if (e == 68) left();
+		}
 #endif
 
-		if(c == KEY_LEFT) left();
-		if(c == 'q') exit(0);
-        if (c == KEY_RIGHT) right();
-        if (c == KEY_UP) up();
-        if (c == KEY_DOWN) down();
 	}
 }
 int main()
