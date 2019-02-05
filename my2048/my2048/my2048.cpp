@@ -57,8 +57,6 @@ void Cell::setValue(int val) {
 
 std::vector<Cell> board;
 
-std::vector<std::vector<Cell>> rows(4, std::vector<Cell>(4));
-std::vector<std::vector<Cell>> cols(4, std::vector<Cell>(4));
 
 void display(){
 #ifdef __unix__
@@ -86,47 +84,15 @@ void display(){
 
 }
 
-void flushRows() {
-    for (int i = 0; i < rowColLength; i++) {
-        for (int j = 0; j < rowColLength; j++) {
-            board[i * rowColLength + j].setValue(rows[i][j].value());
-        }
-    }
-}
-
-void loadRows() {
-    for (int i = 0; i < noOfRowsCols; i++) {
-        for (int j = 0; j < rowColLength; j++) {
-            rows[i][j].setValue(board[i * noOfRowsCols + j].value());
-        }
-    }
-}
-
-void loadCols() {
-    for (int i = 0; i < noOfRowsCols; i++) {
-        for (int j = 0; j < rowColLength; j++) {
-            cols[i][j].setValue(board[i + j * 4].value());
-        }
-
-    }
-}
-
-void flushCols() {
-    for (int i = 0; i < rowColLength; i++) {
-        for (int j = 0; j < rowColLength; j++) {
-            board[i + rowColLength * j].setValue(cols[i][j].value());
-        }
-    }
-}
 
 void compressLeft() {
     for (int x = 0; x < noOfRowsCols;  x++) {
         for (int i = 0; i < rowColLength; i++) {
-            if (rows[x][i].value() == 0) {
+            if (board[x*4+i].value() == 0) {
                 for (int j = i + 1; j < rowColLength; j++) {
-                    if (rows[x][j].value() > 0) {
-                        rows[x][i].setValue(rows[x][j].value());
-                        rows[x][j].setValue(0);
+                    if (board[x*4+j].value() > 0) {
+                        board[x*4+i].setValue(board[x*4+j].value());
+                        board[x*4+j].setValue(0);
                         break;
                     }
                 }
@@ -137,10 +103,10 @@ void compressLeft() {
 
 void joinLeft() {
     for (int x = 0; x < noOfRowsCols;  x++) {
-        for (int i = 0; i < rowColLength; i++) {
-                    if (rows[x][i].value() == rows[x][i+1].value()) {
-                        rows[x][i].setValue(rows[x][i].value()*2);
-                        rows[x][i+1].setValue(0);
+        for (int i = 0; i < rowColLength-1; i++) {
+                    if (board[x*4+i].value() == board[x*4+i+1].value()) {
+                        board[x*4+i].setValue(board[x*4+i].value()*2);
+                        board[x*4+i+1].setValue(0);
                     }
         }
     }
@@ -150,11 +116,11 @@ void joinLeft() {
 void compressUp() {
     for (int x = 0; x < noOfRowsCols;  x++) {
         for (int i = 0; i < rowColLength; i++) {
-            if (cols[x][i].value() == 0) {
+            if (board[x+i*4].value() == 0) {
                 for (int j = i + 1; j < rowColLength; j++) {
-                    if (cols[x][j].value() > 0) {
-                        cols[x][i].setValue(cols[x][j].value());
-                        cols[x][j].setValue(0);
+                    if (board[x+j*4].value() > 0) {
+                        board[x+i*4].setValue(board[x+j*4].value());
+                        board[x+j*4].setValue(0);
                         break;
                     }
                 }
@@ -165,10 +131,10 @@ void compressUp() {
 
 void joinUp() {
     for (int x = 0; x < noOfRowsCols;  x++) {
-        for (int i = 0; i < rowColLength; i++) {
-            if (cols[x][i].value() == cols[x][i+1].value()) {
-                        cols[x][i].setValue(cols[x][i+1].value()*2);
-                        cols[x][i+1].setValue(0);
+        for (int i = 0; i < rowColLength-1; i++) {
+            if (board[x+i*4].value() == board[x+(i+1)*4].value()) {
+                        board[x+i*4].setValue(board[x+(i+1)*4].value()*2);
+                        board[x+(i+1)*4].setValue(0);
             }
         }
     }
@@ -178,11 +144,11 @@ void joinUp() {
 void compressRight() {
     for (int x = 0; x < noOfRowsCols; x++) {
         for (int i = noOfRowsCols - 1; i > 0; i--) {
-            if (rows[x][i].value() == 0) {
+            if (board[x*4+i].value() == 0) {
                 for (int j = i - 1; j >= 0; j--) {
-                    if (rows[x][j].value() > 0) {
-                        rows[x][i].setValue(rows[x][j].value());
-                        rows[x][j].setValue(0);
+                    if (board[x*4+j].value() > 0) {
+                        board[x*4+i].setValue(board[x*4+j].value());
+                        board[x*4+j].setValue(0);
                         break;
                     }
                 }
@@ -194,9 +160,9 @@ void compressRight() {
 void joinRight() {
     for (int x = 0; x < noOfRowsCols; x++) {
         for (int i = noOfRowsCols - 1; i > 0; i--) {
-            if (rows[x][i].value() == rows[x][i-1].value()) {
-                rows[x][i].setValue(rows[x][i-1].value()*2);
-                rows[x][i-1].setValue(0);
+            if (board[x*4+i].value() == board[x*4+i-1].value()) {
+                board[x*4+i].setValue(board[x*4+i-1].value()*2);
+                board[x*4+i-1].setValue(0);
             }
         }
     }
@@ -206,11 +172,11 @@ void joinRight() {
 void compressDown() {
     for (int x = 0; x < noOfRowsCols; x++) {
         for (int i = noOfRowsCols - 1; i > 0; i--) {
-            if (cols[x][i].value() == 0) {
+            if (board[x+i*4].value() == 0) {
                 for (int j = i - 1; j >= 0; j--) {
-                    if (cols[x][j].value() > 0) {
-                        cols[x][i].setValue(cols[x][j].value());
-                        cols[x][j].setValue(0);
+                    if (board[x+j*4].value() > 0) {
+                        board[x+i*4].setValue(board[x+j*4].value());
+                        board[x+j*4].setValue(0);
                         break;
                     }
                 }
@@ -222,9 +188,9 @@ void compressDown() {
 void joinDown() {
     for (int x = 0; x < noOfRowsCols; x++) {
         for (int i = noOfRowsCols - 1; i > 0; i--) {
-            if (cols[x][i].value() == cols[x][i-1].value()) {
-                cols[x][i].setValue(cols[x][i-1].value()*2);
-                cols[x][i-1].setValue(0);
+            if (board[x+i*4].value() == board[x+(i-1)*4].value()) {
+                board[x+i*4].setValue(board[x+(i-1)*4].value()*2);
+                board[x+(i-1)*4].setValue(0);
             }
         }
     }
@@ -233,11 +199,9 @@ void joinDown() {
 
 void left()
 {
-    loadRows();
     compressLeft();
     joinLeft();
     compressLeft();
-    flushRows();
 #ifdef _WIN32
     system("cls");
 #elif defined __unix__
@@ -250,11 +214,9 @@ void left()
 
 void right()
 {
-    loadRows();
     compressRight();
     joinRight();
     compressRight();
-    flushRows();
 #ifdef _WIN32
     system("cls");
 #elif defined __unix__
@@ -264,11 +226,9 @@ void right()
 }
 
 void up() {
-    loadCols();
     compressUp();
     joinUp();
     compressUp();
-    flushCols();
 
 #ifdef _WIN32
     system("cls");
@@ -280,11 +240,9 @@ void up() {
 }
 
 void down() {
-    loadCols();
     compressDown();
     joinDown();
     compressDown();
-    flushCols();
 #ifdef _WIN32
     system("cls");
 #elif defined __unix__
@@ -368,8 +326,6 @@ int main()
 {
 
     initBoard();
-    initRows();
-    initCols();
 
     board[0].setValue(2);
 	board[2].setValue(2);
