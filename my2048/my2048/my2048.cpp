@@ -20,9 +20,7 @@
 #endif
 
 
-const unsigned int rowColLength = 4;
-const unsigned int colLength = 4;
-const unsigned int noOfRowsCols = 4;
+const unsigned int dimension = 4;
 
 class Cell{
 	public:
@@ -62,19 +60,19 @@ void display(){
 #ifdef __unix__
 		system("clear");
 #endif
-		for (int i = 0; i < rowColLength ;i++)
+		for (int i = 0; i < dimension ;i++)
 			std::cout << board[i].value() << "    ";
         std::cout << std::endl;
         std::cout << std::endl;
-        for (int i = rowColLength; i < rowColLength*2; i++)
+        for (int i = dimension; i < dimension*2; i++)
 			std::cout << board[i].value() << "    ";
         std::cout << std::endl;
         std::cout << std::endl;
-        for (int i = rowColLength*2; i < rowColLength*3; i++)
+        for (int i = dimension*2; i < dimension*3; i++)
 			std::cout << board[i].value() << "    ";
         std::cout << std::endl;
         std::cout << std::endl;
-        for (int i = rowColLength*3; i < rowColLength*4; i++)
+        for (int i = dimension*3; i < dimension*4; i++)
 			std::cout << board[i].value() << "    ";
 
         std::cout << std::endl;
@@ -86,13 +84,13 @@ void display(){
 
 
 void compressLeft() {
-    for (int x = 0; x < noOfRowsCols;  x++) {
-        for (int i = 0; i < rowColLength; i++) {
-            if (board[x*4+i].value() == 0) {
-                for (int j = i + 1; j < rowColLength; j++) {
-                    if (board[x*4+j].value() > 0) {
-                        board[x*4+i].setValue(board[x*4+j].value());
-                        board[x*4+j].setValue(0);
+    for (int x = 0; x < dimension;  x++) {
+        for (int i = 0; i < dimension; i++) {
+            if (board[x*dimension+i].value() == 0) {
+                for (int j = i + 1; j < dimension; j++) {
+                    if (board[x*dimension+j].value() > 0) {
+                        board[x*dimension+i].setValue(board[x*dimension+j].value());
+                        board[x*dimension+j].setValue(0);
                         break;
                     }
                 }
@@ -102,11 +100,11 @@ void compressLeft() {
 }
 
 void joinLeft() {
-    for (int x = 0; x < noOfRowsCols;  x++) {
-        for (int i = 0; i < rowColLength-1; i++) {
-                    if (board[x*4+i].value() == board[x*4+i+1].value()) {
-                        board[x*4+i].setValue(board[x*4+i].value()*2);
-                        board[x*4+i+1].setValue(0);
+    for (int x = 0; x < dimension;  x++) {
+        for (int i = 0; i < dimension-1; i++) {
+                    if (board[x*dimension+i].value() == board[x*dimension+i+1].value()) {
+                        board[x*dimension+i].setValue(board[x*dimension+i].value()*2);
+                        board[x*dimension+i+1].setValue(0);
                     }
         }
     }
@@ -114,13 +112,13 @@ void joinLeft() {
 }
 
 void compressUp() {
-    for (int x = 0; x < noOfRowsCols;  x++) {
-        for (int i = 0; i < rowColLength; i++) {
-            if (board[x+i*4].value() == 0) {
-                for (int j = i + 1; j < rowColLength; j++) {
-                    if (board[x+j*4].value() > 0) {
-                        board[x+i*4].setValue(board[x+j*4].value());
-                        board[x+j*4].setValue(0);
+    for (int x = 0; x < dimension;  x++) {
+        for (int i = 0; i < dimension; i++) {
+            if (board[x+i*dimension].value() == 0) {
+                for (int j = i + 1; j < dimension; j++) {
+                    if (board[x+j*dimension].value() > 0) {
+                        board[x+i*dimension].setValue(board[x+j*dimension].value());
+                        board[x+j*dimension].setValue(0);
                         break;
                     }
                 }
@@ -130,11 +128,11 @@ void compressUp() {
 }
 
 void joinUp() {
-    for (int x = 0; x < noOfRowsCols;  x++) {
-        for (int i = 0; i < rowColLength-1; i++) {
-            if (board[x+i*4].value() == board[x+(i+1)*4].value()) {
-                        board[x+i*4].setValue(board[x+(i+1)*4].value()*2);
-                        board[x+(i+1)*4].setValue(0);
+    for (int x = 0; x < dimension;  x++) {
+        for (int i = 0; i < dimension-1; i++) {
+            if (board[x+i*dimension].value() == board[x+(i+1)*dimension].value()) {
+                        board[x+i*dimension].setValue(board[x+(i+1)*dimension].value()*2);
+                        board[x+(i+1)*dimension].setValue(0);
             }
         }
     }
@@ -142,13 +140,13 @@ void joinUp() {
 }
 
 void compressRight() {
-    for (int x = 0; x < noOfRowsCols; x++) {
-        for (int i = noOfRowsCols - 1; i > 0; i--) {
-            if (board[x*4+i].value() == 0) {
+    for (int x = 0; x < dimension; x++) {
+        for (int i = dimension - 1; i > 0; i--) {
+            if (board[x*dimension+i].value() == 0) {
                 for (int j = i - 1; j >= 0; j--) {
-                    if (board[x*4+j].value() > 0) {
-                        board[x*4+i].setValue(board[x*4+j].value());
-                        board[x*4+j].setValue(0);
+                    if (board[x*dimension+j].value() > 0) {
+                        board[x*dimension+i].setValue(board[x*dimension+j].value());
+                        board[x*dimension+j].setValue(0);
                         break;
                     }
                 }
@@ -158,11 +156,11 @@ void compressRight() {
 }
 
 void joinRight() {
-    for (int x = 0; x < noOfRowsCols; x++) {
-        for (int i = noOfRowsCols - 1; i > 0; i--) {
-            if (board[x*4+i].value() == board[x*4+i-1].value()) {
-                board[x*4+i].setValue(board[x*4+i-1].value()*2);
-                board[x*4+i-1].setValue(0);
+    for (int x = 0; x < dimension; x++) {
+        for (int i = dimension - 1; i > 0; i--) {
+            if (board[x*dimension+i].value() == board[x*dimension+i-1].value()) {
+                board[x*dimension+i].setValue(board[x*dimension+i-1].value()*2);
+                board[x*dimension+i-1].setValue(0);
             }
         }
     }
@@ -170,13 +168,13 @@ void joinRight() {
 }
 
 void compressDown() {
-    for (int x = 0; x < noOfRowsCols; x++) {
-        for (int i = noOfRowsCols - 1; i > 0; i--) {
-            if (board[x+i*4].value() == 0) {
+    for (int x = 0; x < dimension; x++) {
+        for (int i = dimension - 1; i > 0; i--) {
+            if (board[x+i*dimension].value() == 0) {
                 for (int j = i - 1; j >= 0; j--) {
-                    if (board[x+j*4].value() > 0) {
-                        board[x+i*4].setValue(board[x+j*4].value());
-                        board[x+j*4].setValue(0);
+                    if (board[x+j*dimension].value() > 0) {
+                        board[x+i*dimension].setValue(board[x+j*dimension].value());
+                        board[x+j*dimension].setValue(0);
                         break;
                     }
                 }
@@ -186,11 +184,11 @@ void compressDown() {
 }
 
 void joinDown() {
-    for (int x = 0; x < noOfRowsCols; x++) {
-        for (int i = noOfRowsCols - 1; i > 0; i--) {
-            if (board[x+i*4].value() == board[x+(i-1)*4].value()) {
-                board[x+i*4].setValue(board[x+(i-1)*4].value()*2);
-                board[x+(i-1)*4].setValue(0);
+    for (int x = 0; x < dimension; x++) {
+        for (int i = dimension - 1; i > 0; i--) {
+            if (board[x+i*dimension].value() == board[x+(i-1)*dimension].value()) {
+                board[x+i*dimension].setValue(board[x+(i-1)*dimension].value()*2);
+                board[x+(i-1)*dimension].setValue(0);
             }
         }
     }
@@ -257,25 +255,6 @@ void initBoard() {
         board.push_back(cell);
     }
 }
-
-void initRows() {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            Cell cell;
-            rows[i].push_back(cell);
-        }
-    }
-}
-
-void initCols() {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            Cell cell;
-            cols[i].push_back(cell);
-        }
-    }
-}
-
 
 
 #ifdef __unix__
