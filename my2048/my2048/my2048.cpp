@@ -120,6 +120,18 @@ void compressLeft() {
     }
 }
 
+void joinLeft() {
+    for (int x = 0; x < noOfRowsCols;  x++) {
+        for (int i = 0; i < rowColLength; i++) {
+                    if (rows[x][i].value() == rows[x][i+1].value()) {
+                        rows[x][i].setValue(rows[x][i].value()*2);
+                        rows[x][i+1].setValue(0);
+                    }
+        }
+    }
+
+}
+
 void compressUp() {
     for (int x = 0; x < noOfRowsCols;  x++) {
         for (int i = 0; i < rowColLength; i++) {
@@ -134,6 +146,18 @@ void compressUp() {
             }
         }
     }
+}
+
+void joinUp() {
+    for (int x = 0; x < noOfRowsCols;  x++) {
+        for (int i = 0; i < rowColLength; i++) {
+            if (cols[x][i].value() == cols[x][i+1].value()) {
+                        cols[x][i].setValue(cols[x][i+1].value()*2);
+                        cols[x][i+1].setValue(0);
+            }
+        }
+    }
+
 }
 
 void compressRight() {
@@ -152,6 +176,18 @@ void compressRight() {
     }
 }
 
+void joinRight() {
+    for (int x = 0; x < noOfRowsCols; x++) {
+        for (int i = noOfRowsCols - 1; i > 0; i--) {
+            if (rows[x][i].value() == rows[x][i-1].value()) {
+                rows[x][i].setValue(rows[x][i-1].value()*2);
+                rows[x][i-1].setValue(0);
+            }
+        }
+    }
+
+}
+
 void compressDown() {
     for (int x = 0; x < noOfRowsCols; x++) {
         for (int i = noOfRowsCols - 1; i > 0; i--) {
@@ -167,9 +203,24 @@ void compressDown() {
         }
     }
 }
+
+void joinDown() {
+    for (int x = 0; x < noOfRowsCols; x++) {
+        for (int i = noOfRowsCols - 1; i > 0; i--) {
+            if (cols[x][i].value() == cols[x][i-1].value()) {
+                cols[x][i].setValue(cols[x][i-1].value()*2);
+                cols[x][i-1].setValue(0);
+            }
+        }
+    }
+
+}
+
 void left()
 {
     loadRows();
+    compressLeft();
+    joinLeft();
     compressLeft();
     flushRows();
 #ifdef _WIN32
@@ -186,6 +237,8 @@ void right()
 {
     loadRows();
     compressRight();
+    joinRight();
+    compressRight();
     flushRows();
 #ifdef _WIN32
     system("cls");
@@ -197,6 +250,8 @@ void right()
 
 void up() {
     loadCols();
+    compressUp();
+    joinUp();
     compressUp();
     flushCols();
 
@@ -211,6 +266,8 @@ void up() {
 
 void down() {
     loadCols();
+    compressDown();
+    joinDown();
     compressDown();
     flushCols();
 #ifdef _WIN32
@@ -298,7 +355,7 @@ int main()
     initRows();
     initCols();
 
-	board[0].setValue(4); 
+    board[0].setValue(2);
 	board[2].setValue(2);
 	board[3].setValue(4);
     board[6].setValue(8);
