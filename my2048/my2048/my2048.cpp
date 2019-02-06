@@ -3,6 +3,8 @@
 #include <vector>
 #include <thread>
 #include <chrono>
+#include <random>
+
 #ifdef _WIN32
 #include <conio.h>
 #endif // 
@@ -20,6 +22,10 @@
 #endif
 
 
+std::random_device rd;
+std::mt19937 rng(rd());
+
+void newCell();
 const unsigned int dimension = 4;
 
 
@@ -50,8 +56,8 @@ void Cell::setFree(bool f) { mFree = f; }
 
 void Cell::setValue(int val) {
     mValue = val;
-    if (mValue > 0) mFree = false;
-    if (mValue == 0) mFree = true;
+    if (val> 0) mFree = false;
+    if (val == 0) mFree = true;
 }
 
 std::vector<Cell> board;
@@ -79,6 +85,15 @@ void display(){
         std::cout << std::endl;
         std::cout << std::endl;
         std::cout << std::endl;
+
+        for (int x = 0; x < board.size(); x++) {
+            std::cout << board[x].value() << "  " << board[x].isFree() << std::endl;
+        }
+
+        std::vector<int> candis;
+        for (int j = 0; j < board.size(); j++) {
+            if (board[j].isFree()) std::cout << j << "\t";
+        }
 
 
 }
@@ -207,7 +222,7 @@ void left()
     system("clear");
 #endif // 
 
-
+    newCell();
     display();
 }
 
@@ -221,6 +236,7 @@ void right()
 #elif defined __unix__
     system("clear");
 #endif // 
+    newCell();
     display();
 }
 
@@ -235,6 +251,7 @@ void up() {
     system("clear");
 #endif // 
 
+    newCell();
     display();
 }
 
@@ -247,6 +264,7 @@ void down() {
 #elif defined __unix__
     system("clear");
 #endif // 
+    newCell();
     display();
 }
 
@@ -255,6 +273,8 @@ void initBoard() {
         Cell cell;
         board.push_back(cell);
     }
+    newCell();
+    newCell();
 }
 
 
@@ -302,29 +322,52 @@ void choose(){
 
 	}
 }
+
+void gameOver() {
+    system("cls");
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << "                    GAME OVER !!!!               ";
+    std::cin.get();
+    exit(0);
+}
+
+int generateRandom(std::vector<int>& candidates) {
+    std::uniform_int_distribution<int> uni(0, candidates.size() - 1);
+    auto random_integer = uni(rng);
+
+    return candidates[random_integer];
+}
+
+void newCell() {
+    std::vector<int> candiCells;
+    for (int i = 0; i < board.size(); i++) {
+        if (board[i].isFree()) candiCells.push_back(i);
+    }
+
+    if (candiCells.size() == 0) gameOver();
+
+    int mIndex = generateRandom(candiCells);
+    board[mIndex].setValue(2);
+}
+
 int main()
 {
 
     initBoard();
 
-    board[0].setValue(2);
-	board[2].setValue(2);
-	board[3].setValue(4);
-    board[6].setValue(8);
-    board[11].setValue(2);
-    board[13].setValue(2);
-
     using namespace std::chrono_literals;
 
-	std::thread view (display);
-    auto start = std::chrono::high_resolution_clock::now();
-    std::this_thread::sleep_for(1s);
+	//std::thread view (display);
 
-	std::thread chos (choose);
+	//std::thread chos (choose);
+    display();
+    choose();
 
 
-	view.join();
-	chos.join();
+	//view.join();
+	//chos.join();
 }
 
 
