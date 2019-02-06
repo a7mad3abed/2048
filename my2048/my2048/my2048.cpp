@@ -22,6 +22,8 @@
 
 const unsigned int dimension = 4;
 
+void generateRan();
+
 class Cell{
 	public:
         Cell();
