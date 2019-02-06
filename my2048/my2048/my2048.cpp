@@ -324,7 +324,11 @@ void choose(){
 }
 
 void gameOver() {
+#ifdef _WIN32
     system("cls");
+#elif defined __unix__
+    system("clear");
+#endif
     std::cout << std::endl;
     std::cout << std::endl;
     std::cout << std::endl;
