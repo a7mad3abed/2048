@@ -380,7 +380,12 @@ void gameOver() {
     std::cout << std::endl;
     std::cout << std::endl;
     std::cout << "                    GAME OVER !!!!               ";
-    std::cin.get();
+#ifdef _WIN32
+    _getch();
+#elif defined __unix__
+    enableRawMode();
+    std::cin;
+#endif
     exit(0);
 }
 
