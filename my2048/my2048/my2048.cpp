@@ -21,6 +21,7 @@
 #define KEY_RIGHT 77
 #endif
 
+int score = 0;
 
 std::random_device rd;
 std::mt19937 rng(rd());
@@ -62,23 +63,35 @@ void Cell::setValue(int val) {
 
 std::vector<Cell> board;
 
+bool noMove(std::vector<Cell>&);
 
 void display(){
 #ifdef __unix__
 		system("clear");
 #endif
+        std::cout << std::endl;
+        std::cout << std::endl;
+        std::cout << "\tscore:       " << score << "\n";
+        std::cout << std::endl;
+        std::cout << std::endl;
+        std::cout << std::endl;
+        std::cout << std::endl;
+        std::cout << "\t";
 		for (int i = 0; i < dimension ;i++)
 			std::cout << board[i].value() << "    ";
         std::cout << std::endl;
         std::cout << std::endl;
+        std::cout << "\t";
         for (int i = dimension; i < dimension*2; i++)
 			std::cout << board[i].value() << "    ";
         std::cout << std::endl;
         std::cout << std::endl;
+        std::cout << "\t";
         for (int i = dimension*2; i < dimension*3; i++)
 			std::cout << board[i].value() << "    ";
         std::cout << std::endl;
         std::cout << std::endl;
+        std::cout << "\t";
         for (int i = dimension*3; i < dimension*4; i++)
 			std::cout << board[i].value() << "    ";
 
@@ -86,14 +99,7 @@ void display(){
         std::cout << std::endl;
         std::cout << std::endl;
 
-        for (int x = 0; x < board.size(); x++) {
-            std::cout << board[x].value() << "  " << board[x].isFree() << std::endl;
-        }
 
-        std::vector<int> candis;
-        for (int j = 0; j < board.size(); j++) {
-            if (board[j].isFree()) std::cout << j << "\t";
-        }
 
 
 }
@@ -120,6 +126,7 @@ void joinLeft() {
         for (int i = 0; i < dimension-1; i++) {
                     if (board[x*dimension+i].value() == board[x*dimension+i+1].value()) {
                         board[x*dimension+i].setValue(board[x*dimension+i].value()*2);
+                        score += board[x*dimension + i].value();
                         board[x*dimension+i+1].setValue(0);
                     }
         }
@@ -148,6 +155,7 @@ void joinUp() {
         for (int i = 0; i < dimension-1; i++) {
             if (board[x+i*dimension].value() == board[x+(i+1)*dimension].value()) {
                         board[x+i*dimension].setValue(board[x+(i+1)*dimension].value()*2);
+                        score += board[x + i * dimension].value();
                         board[x+(i+1)*dimension].setValue(0);
             }
         }
@@ -176,6 +184,7 @@ void joinRight() {
         for (int i = dimension - 1; i > 0; i--) {
             if (board[x*dimension+i].value() == board[x*dimension+i-1].value()) {
                 board[x*dimension+i].setValue(board[x*dimension+i-1].value()*2);
+                score += board[x*dimension + i].value();
                 board[x*dimension+i-1].setValue(0);
             }
         }
@@ -204,6 +213,7 @@ void joinDown() {
         for (int i = dimension - 1; i > 0; i--) {
             if (board[x+i*dimension].value() == board[x+(i-1)*dimension].value()) {
                 board[x+i*dimension].setValue(board[x+(i-1)*dimension].value()*2);
+                score += board[x + i * dimension].value();
                 board[x+(i-1)*dimension].setValue(0);
             }
         }
@@ -337,6 +347,23 @@ void gameOver() {
     exit(0);
 }
 
+bool noMove(std::vector<Cell>& bord) {
+    for (int i = 0; i < dimension; i++) {
+        for (int j = 0; j < dimension-1; j++) {
+            if (bord[i*dimension + j].value() == bord[i*dimension + j + 1].value()) return false;
+        }
+
+    }
+
+    for (int i = 0; i < dimension; i++) {
+        for (int j = 0; j < dimension - 1; j++) {
+            if (bord[i + j * 4].value() == bord[i + (j + 1) * 4].value()) return false;
+        }
+    }
+
+    return true;
+}
+
 int generateRandom(std::vector<int>& candidates) {
     std::uniform_int_distribution<int> uni(0, candidates.size() - 1);
     auto random_integer = uni(rng);
@@ -350,7 +377,8 @@ void newCell() {
         if (board[i].isFree()) candiCells.push_back(i);
     }
 
-    if (candiCells.size() == 0) gameOver();
+    if (candiCells.size() == 0 && noMove(board)) gameOver();
+    if (candiCells.size() == 0 && !noMove(board)) return;
 
     int mIndex = generateRandom(candiCells);
     board[mIndex].setValue(2);
