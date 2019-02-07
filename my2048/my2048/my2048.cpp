@@ -388,18 +388,8 @@ int main()
 {
 
     initBoard();
-
-    using namespace std::chrono_literals;
-
-	//std::thread view (display);
-
-	//std::thread chos (choose);
     display();
     choose();
-
-
-	//view.join();
-	//chos.join();
 }
 
 
