@@ -24,6 +24,7 @@
 int score = 0;
 bool moved = false;
 // I must comment 
+// Another comment
 
 std::random_device rd;
 std::mt19937 rng(rd());
