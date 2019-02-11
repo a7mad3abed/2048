@@ -24,9 +24,11 @@
 int score = 0;
 bool moved = false;
 // I must comment 
+// third comment
 
 std::random_device rd;
 std::mt19937 rng(rd());
+
 
 int randVal();
 void newCell(int);
