@@ -345,7 +345,7 @@ void enableRawMode(){
 
 #endif
 
-void choose(){
+void moveIt(){
 	char c;
 #ifdef _WIN32
     while(c = _getch()){
@@ -455,7 +455,7 @@ int main()
 
     initBoard();
     display();
-    choose();
+    moveIt();
 }
 
 
