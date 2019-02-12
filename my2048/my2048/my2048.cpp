@@ -4,6 +4,7 @@
 #include <thread>
 #include <chrono>
 #include <random>
+#include "Cell.h"
 
 #ifdef _WIN32
 #include <conio.h>
@@ -34,37 +35,6 @@ void newCell(int);
 void gameOver();
 const unsigned int dimension = 4;
 
-
-class Cell{
-	public:
-        Cell();
-        ~Cell();
-		int value()const{return mValue;}
-        void setValue(int val);
-        bool isFree() const;
-        void setFree(bool);
-	private:
-		int mValue;
-        bool mFree;
-};
-
-Cell::Cell() :
-    mValue{ 0 },
-    mFree{ true }
-{
-}
-
-
-Cell::~Cell(){}
-
-bool Cell::isFree() const { return mFree; }
-void Cell::setFree(bool f) { mFree = f; }
-
-void Cell::setValue(int val) {
-    mValue = val;
-    if (val> 0) mFree = false;
-    if (val == 0) mFree = true;
-}
 
 std::vector<Cell> board;
 
