@@ -1,4 +1,8 @@
-#pragma once
+#ifndef _Cell_h
+#define _Cell_h
+
+
+
 class Cell {
 public:
     Cell();
@@ -11,3 +15,5 @@ private:
     int mValue;
     bool mFree;
 }; 
+
+#endif
