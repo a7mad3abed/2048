@@ -1,11 +1,6 @@
 #include "ui.h"
 #include "Board.h"
 
-
-
-
-
-
 void display(std::vector<Cell> board) {
 #ifdef __unix__
     system("clear");

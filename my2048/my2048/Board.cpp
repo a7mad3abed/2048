@@ -1,6 +1,9 @@
 #include "Board.h"
 
 
+int score = 0;
+
+int dimension = 4;
 
 std::random_device rd;
 std::mt19937 rng(rd());

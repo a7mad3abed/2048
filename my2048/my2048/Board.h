@@ -28,10 +28,10 @@ void enableRawMode();
 #endif
 
 
-static unsigned int dimension = 4;
+extern int dimension;
 
 
-static int score = 0;
+extern int score;
 
 
 
