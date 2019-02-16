@@ -1,9 +1,6 @@
 #include "ui.h"
 #include "Board.h"
 
-const unsigned int dimension = 4;
-int score = 0;
-
 
 
 

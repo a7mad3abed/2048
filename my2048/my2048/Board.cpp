@@ -1,9 +1,6 @@
 #include "Board.h"
 
 
-const unsigned int dimension = 4;
-
-int score = 0;
 
 std::random_device rd;
 std::mt19937 rng(rd());
